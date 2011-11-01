@@ -26,7 +26,6 @@ setup(
     install_requires=[
         'setuptools',
         'Products.CMFPlone',
-        'Products.CMFNotification',
     ],
     entry_points="""
         [z3c.autoinclude.plugin]
