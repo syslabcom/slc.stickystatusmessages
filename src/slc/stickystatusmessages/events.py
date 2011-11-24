@@ -5,12 +5,14 @@ from plone.registry.interfaces import IRegistry
 from Products.CMFCore.utils import getToolByName
 from slc.stickystatusmessages import StickyStatusMessageFactory as _
 from slc.stickystatusmessages.interfaces import IStickyStatusMessagesSettings
+from slc.stickystatusmessages.interfaces import IStickyStatusMessagesLayer
 log = logging.getLogger('slc.stickystatusmessages/events.py')
 
 def ifenabled(func):
     """ This is a decorator to be applied on the event handlers below. It
         checks if they should be enabled and runs them, otherwise it does
-        nothing. """
+        nothing. 
+    """
     def wrapper(*args, **kwargs):
         # TODO read registry here
         registry = queryUtility(IRegistry)
@@ -32,6 +34,9 @@ def ifenabled(func):
 @ifenabled
 def object_copied_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
@@ -50,6 +55,9 @@ def object_copied_event(obj, evt):
 @ifenabled
 def object_moved_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     if obj.isTemporary() or not evt.newParent or not evt.oldParent:
         return
 
@@ -73,6 +81,9 @@ def object_moved_event(obj, evt):
 @ifenabled
 def object_removed_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
@@ -126,6 +137,9 @@ def object_edited_event(obj, evt):
 @ifenabled
 def object_state_changed_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
@@ -150,9 +164,11 @@ def object_state_changed_event(obj, evt):
 
 @ifenabled
 def object_parent_edited_event(obj, evt):
+    """ Notify children when the parent is edited
     """
-    Notify children when the parent is edited
-    """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
@@ -167,3 +183,4 @@ def object_parent_edited_event(obj, evt):
                 )
     for child in obj.objectIds():
         utils.set_sticky_status_message(obj[child], message)
+
