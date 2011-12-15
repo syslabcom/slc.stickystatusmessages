@@ -9,13 +9,13 @@ from slc.stickystatusmessages.config import SSMKEY
 from Products.CMFCore.utils import getToolByName
 
 _messages = {
-    'item_creation': _('Item <a href="$u">$t</a> has been created'),
-    'item_modification': _('Item <a href="$u">$t</a> has been modified'),
-    'item_removal': _('Item $t has been removed'),
-    'wf_transition': _('Status of <a href="$u">$t</a> has changed, it is now $s'),
-    'member_registration': _('Member $m registered'),
-    'member_modification': _('Member $m was modified'),
-    'discussion_item_creation': _('<a href="$u">Discussion item</a> was created'),
+    'item_creation': _('Item <a href="$u">$t</a> has been created. The change note was: $c.'),
+    'item_modification': _('Item <a href="$u">$t</a> has been modified. The changenote was: $c.'),
+    'item_removal': _('Item $t has been removed.'),
+    'wf_transition': _('Status of <a href="$u">$t</a> has changed, it is now $s.'),
+    'member_registration': _('Member $m registered.'),
+    'member_modification': _('Member $m was modified.'),
+    'discussion_item_creation': _('<a href="$u">Discussion item</a> was created.'),
 }
 
 try:
@@ -29,11 +29,7 @@ try:
             return _(u'sticky_status_notification_delivery_description',
                        default=u'Notify using status messages')
 
-        def notify(self, obj, user, what, label,
-                           get_users_extra_bindings,
-                           mail_template_extra_bindings,
-                           mail_template_options):
-
+        def notify(self, obj, user, what, label, bindings):
             portal_membership = getToolByName(obj, 'portal_membership')
             member = portal_membership.getMemberById(user)
             if member is not None:
@@ -45,8 +41,9 @@ try:
                 mapping = {
                     'u': obj.absolute_url(),
                     't': obj.Title(),
-                    's': mail_template_options['current_state'],
-                    'm': str(mail_template_options.get('member'))
+                    's': bindings['current_state'],
+                    'm': str(bindings.get('member')),
+                    'c': bindings.get('changenote', 'No change note')
                 }
 
                 msg = interpolate(_messages[what], mapping)
