@@ -14,7 +14,11 @@ def set_sticky_status_message(obj, message, type='info'):
     portal_groups = getToolByName(obj, 'portal_groups')
     groups_and_members = []
     sharing = getMultiAdapter((obj, obj.REQUEST), name='sharing')
-    for roles_dict in sharing.existing_role_settings():
+    try:
+        ers = sharing.existing_role_settings()
+    except AttributeError:
+        return 
+    for roles_dict in ers:
         if roles_dict['disabled']:
             continue
 
