@@ -41,14 +41,14 @@ def object_copied_event(obj, evt):
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
     message = _(
-                u'%s <a href="%s">%s</a> has been copied into <a href="%s">%s</a>' \
-                                                % ( obj.portal_type, 
-                                                    '/'.join(obj.getPhysicalPath()), 
-                                                    obj_title.decode('utf-8'), 
-                                                    '/'.join(folder.getPhysicalPath()),
-                                                    folder_title.decode('utf-8'), 
-                                                    )
+        u'%s <a href="%s">%s</a> has been copied into <a href="%s">%s</a>' \
+            % ( obj.portal_type, 
+                '/'.join(obj.getPhysicalPath()), 
+                obj_title.decode('utf-8'), 
+                '/'.join(folder.getPhysicalPath()),
+                folder_title.decode('utf-8'), 
                 )
+            )
     utils.set_sticky_status_message(obj, message)
 
 
@@ -101,6 +101,9 @@ def object_removed_event(obj, evt):
 @ifenabled
 def object_created_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
@@ -119,6 +122,9 @@ def object_created_event(obj, evt):
 @ifenabled
 def object_edited_event(obj, evt):
     """ """
+    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+        return
+
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''

@@ -34,7 +34,6 @@ class StickyStatusMessagesViewlet(ViewletBase):
 class StickyStatusMessagesAJAXView(BrowserView):
     implements(IAJAXView)
     
-
     def delete_all_messages(self):
         """ Remove all the currently stored sticky messages by simply
             replacing the annotations with a new empty dict.
@@ -72,3 +71,4 @@ class StickyStatusMessagesSettings(RegistryEditForm):
 
 class StickyStatusMessagesControlPanel(ControlPanelFormWrapper):
     form = StickyStatusMessagesSettings
+
