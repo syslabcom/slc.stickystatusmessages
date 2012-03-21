@@ -4,8 +4,11 @@ Changelog
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Play nicely when not installed. Check if the browserlayer is installed before
+  continuing. [jcbrand]
+- Added an adapter for the notification mechanism. Enables CMFNotification
+  integration. [isburger]
+- Check for attribute error if running with testrunner request
 
 0.3 (2011-09-13)
 ----------------
