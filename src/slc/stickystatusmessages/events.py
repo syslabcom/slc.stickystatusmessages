@@ -11,7 +11,7 @@ log = logging.getLogger('slc.stickystatusmessages/events.py')
 def ifenabled(func):
     """ This is a decorator to be applied on the event handlers below. It
         checks if they should be enabled and runs them, otherwise it does
-        nothing. 
+        nothing.
     """
     def wrapper(*args, **kwargs):
         # TODO read registry here
@@ -42,11 +42,11 @@ def object_copied_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
         u'%s <a href="%s">%s</a> has been copied into <a href="%s">%s</a>' \
-            % ( obj.portal_type, 
-                '/'.join(obj.getPhysicalPath()), 
-                obj_title.decode('utf-8'), 
+            % ( obj.portal_type,
+                '/'.join(obj.getPhysicalPath()),
+                obj_title.decode('utf-8'),
                 '/'.join(folder.getPhysicalPath()),
-                folder_title.decode('utf-8'), 
+                folder_title.decode('utf-8'),
                 )
             )
     utils.set_sticky_status_message(obj, message)
@@ -69,10 +69,10 @@ def object_moved_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <em>%s</em> moved into <a href="%s">%s</a>' \
-                                        % ( obj.portal_type, 
-                                            obj_title.decode('utf-8'), 
+                                        % ( obj.portal_type,
+                                            obj_title.decode('utf-8'),
                                             '/'.join(folder.getPhysicalPath()),
-                                            folder_title.decode('utf-8'), 
+                                            folder_title.decode('utf-8'),
                                             )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -89,10 +89,10 @@ def object_removed_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <em>%s</em> removed from <a href="%s">%s</a>' \
-                                        % ( obj.portal_type, 
-                                            obj_title.decode('utf-8'), 
+                                        % ( obj.portal_type,
+                                            obj_title.decode('utf-8'),
                                             '/'.join(folder.getPhysicalPath()),
-                                            folder_title.decode('utf-8'), 
+                                            folder_title.decode('utf-8'),
                                             )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -107,13 +107,13 @@ def object_created_event(obj, evt):
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
-    message = _(    
+    message = _(
                 u'%s <a href="%s">%s</a> created in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        obj_title.decode('utf-8'),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        folder_title.decode('utf-8'),
                                         )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -130,11 +130,11 @@ def object_edited_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <a href="%s">%s</a> edited in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        obj_title.decode('utf-8'),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        folder_title.decode('utf-8'),
                                         )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -156,12 +156,12 @@ def object_state_changed_event(obj, evt):
     message = _(
                 u'The workflow state of %s <a href="%s">%s</a> ' \
                 'in <a href="%s">%s</a> has been changed to <em>%s</em>' \
-                    % ( obj.portal_type, 
-                        '/'.join(obj.getPhysicalPath()), 
-                        obj_title.decode('utf-8'), 
+                    % ( obj.portal_type,
+                        '/'.join(obj.getPhysicalPath()),
+                        obj_title.decode('utf-8'),
                         '/'.join(folder.getPhysicalPath()),
-                        folder_title.decode('utf-8'), 
-                        state, 
+                        folder_title.decode('utf-8'),
+                        state,
                         )
                 )
 
@@ -180,11 +180,11 @@ def object_parent_edited_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <a href="%s">%s</a> edited in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        obj_title.decode('utf-8'),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        folder_title.decode('utf-8'),
                                         )
                 )
     for child in obj.objectIds():
