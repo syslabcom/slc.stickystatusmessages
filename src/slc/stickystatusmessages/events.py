@@ -8,10 +8,17 @@ from slc.stickystatusmessages.interfaces import IStickyStatusMessagesSettings
 from slc.stickystatusmessages.interfaces import IStickyStatusMessagesLayer
 log = logging.getLogger('slc.stickystatusmessages/events.py')
 
+
+def safe_unicode(txt):
+    if not isinstance(txt, unicode):
+        txt = txt.decode('utf-8')
+    return txt
+
+
 def ifenabled(func):
     """ This is a decorator to be applied on the event handlers below. It
         checks if they should be enabled and runs them, otherwise it does
-        nothing. 
+        nothing.
     """
     def wrapper(*args, **kwargs):
         # TODO read registry here
@@ -34,7 +41,10 @@ def ifenabled(func):
 @ifenabled
 def object_copied_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -42,11 +52,11 @@ def object_copied_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
         u'%s <a href="%s">%s</a> has been copied into <a href="%s">%s</a>' \
-            % ( obj.portal_type, 
-                '/'.join(obj.getPhysicalPath()), 
-                obj_title.decode('utf-8'), 
+            % ( obj.portal_type,
+                '/'.join(obj.getPhysicalPath()),
+                safe_unicode(obj_title),
                 '/'.join(folder.getPhysicalPath()),
-                folder_title.decode('utf-8'), 
+                safe_unicode(folder_title),
                 )
             )
     utils.set_sticky_status_message(obj, message)
@@ -55,7 +65,10 @@ def object_copied_event(obj, evt):
 @ifenabled
 def object_moved_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     if obj.isTemporary() or not evt.newParent or not evt.oldParent:
@@ -69,10 +82,10 @@ def object_moved_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <em>%s</em> moved into <a href="%s">%s</a>' \
-                                        % ( obj.portal_type, 
-                                            obj_title.decode('utf-8'), 
+                                        % ( obj.portal_type,
+                                            safe_unicode(obj_title),
                                             '/'.join(folder.getPhysicalPath()),
-                                            folder_title.decode('utf-8'), 
+                                            safe_unicode(folder_title),
                                             )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -81,7 +94,10 @@ def object_moved_event(obj, evt):
 @ifenabled
 def object_removed_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -89,10 +105,10 @@ def object_removed_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <em>%s</em> removed from <a href="%s">%s</a>' \
-                                        % ( obj.portal_type, 
-                                            obj_title.decode('utf-8'), 
+                                        % ( obj.portal_type,
+                                            safe_unicode(obj_title),
                                             '/'.join(folder.getPhysicalPath()),
-                                            folder_title.decode('utf-8'), 
+                                             safe_unicode(folder_title),
                                             )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -101,19 +117,22 @@ def object_removed_event(obj, evt):
 @ifenabled
 def object_created_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
     folder_title = folder.Title() or ''
     obj_title = obj.Title() or ''
-    message = _(    
+    message = _(
                 u'%s <a href="%s">%s</a> created in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        safe_unicode(obj_title),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        safe_unicode(folder_title),
                                         )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -122,7 +141,10 @@ def object_created_event(obj, evt):
 @ifenabled
 def object_edited_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -130,11 +152,11 @@ def object_edited_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <a href="%s">%s</a> edited in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        safe_unicode(obj_title),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        safe_unicode(folder_title),
                                         )
                 )
     utils.set_sticky_status_message(obj, message)
@@ -143,7 +165,10 @@ def object_edited_event(obj, evt):
 @ifenabled
 def object_state_changed_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -156,12 +181,12 @@ def object_state_changed_event(obj, evt):
     message = _(
                 u'The workflow state of %s <a href="%s">%s</a> ' \
                 'in <a href="%s">%s</a> has been changed to <em>%s</em>' \
-                    % ( obj.portal_type, 
-                        '/'.join(obj.getPhysicalPath()), 
-                        obj_title.decode('utf-8'), 
+                    % ( obj.portal_type,
+                        '/'.join(obj.getPhysicalPath()),
+                        safe_unicode(obj_title),
                         '/'.join(folder.getPhysicalPath()),
-                        folder_title.decode('utf-8'), 
-                        state, 
+                        safe_unicode(folder_title),
+                        state,
                         )
                 )
 
@@ -172,7 +197,10 @@ def object_state_changed_event(obj, evt):
 def object_parent_edited_event(obj, evt):
     """ Notify children when the parent is edited
     """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -180,11 +208,11 @@ def object_parent_edited_event(obj, evt):
     obj_title = obj.Title() or ''
     message = _(
                 u'%s <a href="%s">%s</a> edited in <a href="%s">%s</a>' \
-                                    % ( obj.portal_type, 
-                                        '/'.join(obj.getPhysicalPath()), 
-                                        obj_title.decode('utf-8'), 
+                                    % ( obj.portal_type,
+                                        '/'.join(obj.getPhysicalPath()),
+                                        safe_unicode(obj_title),
                                         '/'.join(folder.getPhysicalPath()),
-                                        folder_title.decode('utf-8'), 
+                                        safe_unicode(folder_title),
                                         )
                 )
     for child in obj.objectIds():
