@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4 (unreleased)
+0.4 (2012-03-21)
 ----------------
 
 - Play nicely when not installed. Check if the browserlayer is installed before
