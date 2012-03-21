@@ -34,7 +34,10 @@ def ifenabled(func):
 @ifenabled
 def object_copied_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -55,7 +58,10 @@ def object_copied_event(obj, evt):
 @ifenabled
 def object_moved_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     if obj.isTemporary() or not evt.newParent or not evt.oldParent:
@@ -81,7 +87,10 @@ def object_moved_event(obj, evt):
 @ifenabled
 def object_removed_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -101,7 +110,10 @@ def object_removed_event(obj, evt):
 @ifenabled
 def object_created_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -122,7 +134,10 @@ def object_created_event(obj, evt):
 @ifenabled
 def object_edited_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -143,7 +158,10 @@ def object_edited_event(obj, evt):
 @ifenabled
 def object_state_changed_event(obj, evt):
     """ """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
@@ -172,7 +190,10 @@ def object_state_changed_event(obj, evt):
 def object_parent_edited_event(obj, evt):
     """ Notify children when the parent is edited
     """
-    if not IStickyStatusMessagesLayer.providedBy(obj.REQUEST):
+    request = getattr(obj, 'REQUEST', None)
+    if not request:
+        return
+    if not IStickyStatusMessagesLayer.providedBy(request):
         return
 
     folder = obj.aq_parent
