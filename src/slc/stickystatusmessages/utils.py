@@ -2,7 +2,7 @@ import datetime
 from zope.component import getMultiAdapter
 from zope.annotation.interfaces import IAnnotations
 from Products.CMFCore.utils import getToolByName
-from config import SSMKEY
+from config import SSMKEY, MSG_LIMIT
 
 def set_sticky_status_message(obj, message, type='info'):
     """ obj:  The object on which the operation occured and on which the
@@ -53,6 +53,19 @@ def set_sticky_status_message(obj, message, type='info'):
         annotations = IAnnotations(member)
         # annotations[SSMKEY] = {}
         sticky_messages = annotations.get(SSMKEY, {})
+
+        print "annotation length: %s" % len(str(sticky_messages))
+        # self healing code
+        if len(sticky_messages)>MSG_LIMIT:
+            keys = sticky_messages.keys()
+            keys.sort()
+            latest = keys[-MSG_LIMIT:]
+            nsm = {}
+            for key in latest:
+                nsm[key] = sticky_messages[key]
+            sticky_messages = nsm
+
+        print "new annotation length: %s" % len(str(sticky_messages))
         mdict= {
             'type': type,
             'message': message,
