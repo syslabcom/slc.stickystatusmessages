@@ -4,7 +4,7 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added self healing code to avoid messages to pile up (pilz).
 
 
 0.4 (2012-03-21)
