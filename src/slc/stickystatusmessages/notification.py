@@ -17,46 +17,45 @@ _messages = {
     'member_modification': _('Member $m was modified.'),
     'discussion_item_creation': _('<a href="$u">Discussion item</a> was created.'),
 }
-
 try:
     from Products.CMFNotification.interfaces import INotificationDelivery
+except:
+    INotificationDelivery = None
+    
+class StickyStatusNotificationDelivery(object):
+    implements(INotificationDelivery)
 
-    class StickyStatusNotificationDelivery(object):
-        implements(INotificationDelivery)
+    @property
+    def description(self):
+        return _(u'sticky_status_notification_delivery_description',
+                   default=u'Notify using status messages')
 
-        @property
-        def description(self):
-            return _(u'sticky_status_notification_delivery_description',
-                       default=u'Notify using status messages')
+    def notify(self, obj, user, what, label, bindings):
+        portal_membership = getToolByName(obj, 'portal_membership')
+        member = portal_membership.getMemberById(user)
+        if member is not None:
+            timestamp = datetime.now().isoformat()
+            annotations = IAnnotations(member)
+            sticky_messages = annotations.get(SSMKEY, {})
 
-        def notify(self, obj, user, what, label, bindings):
-            portal_membership = getToolByName(obj, 'portal_membership')
-            member = portal_membership.getMemberById(user)
-            if member is not None:
-                timestamp = datetime.now().isoformat()
-                annotations = IAnnotations(member)
-                sticky_messages = annotations.get(SSMKEY, {})
+            # Create mapping for interpolation
+            mapping = {
+                'u': obj.absolute_url(),
+                't': obj.Title(),
+                's': bindings['current_state'],
+                'm': str(bindings.get('member')),
+                'c': bindings.get('changenote', 'No change note')
+            }
 
-                # Create mapping for interpolation
-                mapping = {
-                    'u': obj.absolute_url(),
-                    't': obj.Title(),
-                    's': bindings['current_state'],
-                    'm': str(bindings.get('member')),
-                    'c': bindings.get('changenote', 'No change note')
+            msg = interpolate(_messages[what], mapping)
+
+            mdict= {
+                'type': 'info',
+                'message': msg,
+                'timestamp': timestamp,
                 }
+            sticky_messages[timestamp] = mdict
+            annotations[SSMKEY] = sticky_messages
+            return 1
+        return 0
 
-                msg = interpolate(_messages[what], mapping)
-
-                mdict= {
-                    'type': 'info',
-                    'message': msg,
-                    'timestamp': timestamp,
-                    }
-                sticky_messages[timestamp] = mdict
-                annotations[SSMKEY] = sticky_messages
-                return 1
-            return 0
-
-except ImportError:
-    pass
