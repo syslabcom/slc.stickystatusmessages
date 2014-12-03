@@ -4,7 +4,8 @@ Changelog
 0.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- make dependency more harmless, so that we can actually import it [pilz]
+- Add missing boilerplate for newer setuptools [do3cc]
 
 
 0.6 (2013-04-19)
